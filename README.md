@@ -1,5 +1,7 @@
 # test
 
+Github Pages: https://noone182.github.io/vue-form-test/#/
+
 ## Project setup
 ```
 yarn install
