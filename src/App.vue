@@ -2,9 +2,9 @@
   <div id="app">
 		<Header />
 		<keep-alive>
-		<router-view>
-			<FormStepOne/>
-		</router-view>
+			<router-view>
+				<FormStepOne/>
+			</router-view>
 		</keep-alive>
 
 
@@ -157,11 +157,11 @@ main {
 		input[type="number"]:focus {
 			-moz-appearance: number-input;
 		}
-		input:invalid {
+		.form-field--error:invalid {
 			border: 1px solid red;
 		}
-		input:valid {
-			border: 1px solid green;
+		.form-field--error:valid {
+			border: 1px solid red;
 		}
  }
 </style>

@@ -12,34 +12,40 @@
 				</div>
 				<div class="form-desc">Имя на карте</div>
 				<input
-					v-model="card.name"
+					v-model="$v.card.name.$model"
+					:class="{ 'form-field--error': $v.card.name.$error }"
 					placeholder="Konstantin Ivanov"
 					type="text"
-					class="form-field" required />
+					class="form-field"  />
 
 				<div class="form-desc">Номер карты</div>
 				<input
-					v-model="card.number"
+					v-model="$v.card.number.$model"
+					:class="{ 'form-field--error': $v.card.number.$error }"
 					placeholder="XXXX XXXX XXXX XXXX XXXX"
-					type="number"
-					class="form-field" required />
+					v-mask="'#### #### #### #### ####'"
+					type="tel"
+					class="form-field"  />
 				<div class="form-wrapper">
 						<div>
 							<div class="form-desc form-desc-two">Срок</div>
 								<input
-									v-model="card.date"
+									v-model="$v.card.date.$model"
+									:class="{ 'form-field--error': $v.card.date.$error }"
 									placeholder="MM / YY"
-									type="number"
+									v-mask="'## / ##'"
+									type="tel"
 									class="form-field form-field-date"
-									required />
+								/>
 						</div>
 						<div>
 							<div class="form-desc form-desc-two">CVV</div>
 								<input
-									v-model="card.cvv"
+									v-model="$v.card.cvv.$model"
+									:class="{ 'form-field--error': $v.card.cvv.$error }"
 									type="password"
 									class="form-field form-field-cvv"
-									required
+									v-mask="'###'"
 									/>
 						</div>
 
@@ -48,6 +54,7 @@
 				<button
 					class="form-btn"
 					type="submit"
+					:disabled="submitStatus === 'OK'"
 				>
 					Оплатить
 				</button>
@@ -58,6 +65,7 @@
 </template>
 
 <script>
+import { required, minLength, maxLength } from 'vuelidate/lib/validators'
 
 export default {
   name: 'FormStepTwo',
@@ -69,14 +77,47 @@ export default {
 				cvv: '',
 				number: ''
 
-      }
+			},
+			submitStatus: null
     }
 	},
-	methods: {
-		submit() {
-				return this.$router.push({ path: '/thanks' })
+  validations: {
+    card: {
+      name: {
+				required,
+				alpha: val => /^[a-zA-Z]*$/i.test(val),
+				maxLength: maxLength(30),
+				minLength: minLength(5)
+			},
+      date: {
+				required,
+				maxLength: maxLength(7),
+				minLength: minLength(7)
+			},
+      number: {
+				required,
+				maxLength: maxLength(24),
+				minLength: minLength(24)
+			},
+      cvv: {
+				required,
+				maxLength: maxLength(3),
+				minLength: minLength(3)
+			},
     }
-	}
+  },
+  methods: {
+    submit() {
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        this.submitStatus = "ERROR";
+      } else {
+        // do your submit logic here
+				this.submitStatus = "OK";
+				return this.$router.push({ path: "/thanks" });
+      }
+		}
+	},
 }
 </script>
 
